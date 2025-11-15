@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!--/*@thymesVar id="posts" type="List<BlogPost>"*/-->
+    <div th:each="post:${posts}">
+        <label>Title : </label>
+        <span th:text="post.getTitle()"></span>
+        <br/>
+        <label>Content : </label>
+        <span th:text="post.getContent()"></span>
+        <br/>
+        <label>Author : </label>
+        <span th:text="post.getAuthor()"></span>
+    </div>
+</body>
+</html>
