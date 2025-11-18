@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Blog Posts</title>
 </head>
 <body>
-    <!--/*@thymesVar id="posts" type="List<BlogPost>"*/-->
+<a th:href="@{/blog_post/create}">Create</a>
+<!--/*@thymesVar id="getAll" type="List<com.vladdjuga.blogsite.model.entity.BlogPostEntity>"*/-->
     <div th:each="post:${posts}">
         <label>Title : </label>
-        <span th:text="post.getTitle()"></span>
+        <span th:text="${post.title}"></span>
         <br/>
         <label>Content : </label>
-        <span th:text="post.getContent()"></span>
+        <span th:text="${post.content}"></span>
         <br/>
         <label>Author : </label>
-        <span th:text="post.getAuthor()"></span>
+        <span th:text="${post.author}"></span>
     </div>
 </body>
 </html>

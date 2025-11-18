@@ -10,16 +10,16 @@ public class V1__create_blog_post_table extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) {
-        new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true))
-                .execute("""
-            CREATE TABLE blog_posts (
-                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        title VARCHAR(255),
-                        content CLOB,
-                        author VARCHAR(255),
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        JdbcTemplate jdbc = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));
+        jdbc.execute("CREATE SEQUENCE IF NOT EXISTS blog_posts_seq START WITH 1 INCREMENT BY 1");
+        jdbc.execute("""
+            CREATE TABLE IF NOT EXISTS blog_posts (
+                id BIGINT PRIMARY KEY DEFAULT nextval('blog_posts_seq'),
+                title VARCHAR(255) NOT NULL,
+                content TEXT,
+                author VARCHAR(255),
+                created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
             )
-""");
-
+        """);
     }
 }

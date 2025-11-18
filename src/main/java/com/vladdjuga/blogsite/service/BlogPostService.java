@@ -16,13 +16,14 @@ public class BlogPostService {
     }
 
     public List<BlogPostEntity> getAll(){
-        log.info("Getting all posts");
+        log.info("Getting all getAll");
         return postRepository.findAll();
     }
 
-    public BlogPostEntity savePost(BlogPostEntity post){
+    public void savePost(BlogPostEntity post){
         log.info("Saving post");
         log.info("Post: {}", post);
-        return postRepository.save(post);
+        postRepository.save(post);
+        postRepository.flush();
     }
 }

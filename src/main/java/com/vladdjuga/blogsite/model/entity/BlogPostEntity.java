@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "blog_posts")
+@SequenceGenerator(name = "blog_posts_seq", sequenceName = "blog_posts_seq", allocationSize = 1)
 public class BlogPostEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_posts_seq")
     private Long id;
 
     private String title;
