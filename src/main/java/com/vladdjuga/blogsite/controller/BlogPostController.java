@@ -19,7 +19,7 @@ class BlogPostController {
     @GetMapping({"", "/"})
     public String getAll(Model model) {
         model.addAttribute("posts", postService.getAll());
-        return "blog_post/posts"; // templates/blog_post/posts.html
+        return "blog_post/index"; // templates/blog_post/index.html
     }
 
     @GetMapping("/create")
