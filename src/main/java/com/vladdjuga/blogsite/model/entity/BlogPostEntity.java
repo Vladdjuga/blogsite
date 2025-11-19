@@ -20,7 +20,9 @@ public class BlogPostEntity {
 
     private String content;
 
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private UserEntity author;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp(source = SourceType.DB)

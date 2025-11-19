@@ -3,6 +3,9 @@ package com.vladdjuga.blogsite.model.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -20,4 +23,7 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPostEntity> posts = new ArrayList<>();
 }
