@@ -2,14 +2,13 @@ package com.vladdjuga.blogsite.controller;
 
 import com.vladdjuga.blogsite.model.entity.UserEntity;
 import com.vladdjuga.blogsite.service.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/user")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -19,20 +18,13 @@ public class UserController {
     }
 
     @GetMapping({"", "/"})
-    public String getAll(Model model) {
-        model.addAttribute("users", userService.getAll());
-        return "user/index"; // templates/user/index.html
-    }
-
-    @GetMapping("/create")
-    public String createNewUserPage(Model model) {
-        model.addAttribute("user", new UserEntity());
-        return "user/create"; // templates/user/create.html
+    public List<UserEntity> getAll() {
+        return userService.getAll();
     }
 
     @PostMapping({"", "/"})
-    public String createNewUser(UserEntity user) {
+    public ResponseEntity<UserEntity> createNewUser(@RequestBody UserEntity user) {
         userService.saveUser(user);
-        return "redirect:/user/";
+        return ResponseEntity.ok(user);
     }
 }
