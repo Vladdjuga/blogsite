@@ -1,8 +1,14 @@
 package com.vladdjuga.blogsite.service;
 
+import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
+import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
+import com.vladdjuga.blogsite.mapper.blog_post.BlogPostMapper;
 import com.vladdjuga.blogsite.model.entity.BlogPostEntity;
 import com.vladdjuga.blogsite.repository.BlogPostRepository;
+import com.vladdjuga.blogsite.repository.UserRepository;
+import com.vladdjuga.blogsite.result.Result;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,21 +16,37 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BlogPostService {
     private final BlogPostRepository postRepository;
-    public BlogPostService(BlogPostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final UserRepository userRepository;
+    private final BlogPostMapper blogPostMapper;
 
-    public List<BlogPostEntity> getAll(){
-        log.info("Getting all getAll");
-        return postRepository.findAll();
+    public Result<List<ReadBlogPostDto>> getAll(){
+        log.info("Getting all blog posts");
+        var posts = postRepository.findAll();
+        var res = posts.stream().map(blogPostMapper::toDto).toList();
+        return Result.ok(res);
     }
 
     @Transactional
-    public void savePost(BlogPostEntity post){
+    public Result<ReadBlogPostDto> savePost(CreateBlogPostDto post){
+        if(post == null){
+            log.warn("Attempted to save null post");
+            return Result.fail("Post cannot be null");
+        }
         log.info("Saving post");
         log.info("Post: {}", post);
-        postRepository.save(post);
+
+        var author = userRepository.findById(post.authorId());
+        if(author.isEmpty()){
+            log.warn("Author with id {} not found", post.authorId());
+            return Result.fail("Author not found");
+        }
+
+        var postEntity = blogPostMapper.toEntity(post,author.get());
+        var savedEntity = postRepository.save(postEntity);
+        var resDto = blogPostMapper.toDto(savedEntity);
+        return Result.ok(resDto);
     }
 }

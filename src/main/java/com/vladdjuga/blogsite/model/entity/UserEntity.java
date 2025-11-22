@@ -2,8 +2,11 @@ package com.vladdjuga.blogsite.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -26,4 +29,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogPostEntity> posts = new ArrayList<>();
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp(source = SourceType.DB)
+    private Date createdAt;
 }

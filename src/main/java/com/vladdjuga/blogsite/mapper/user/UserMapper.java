@@ -1,0 +1,27 @@
+package com.vladdjuga.blogsite.mapper.user;
+
+import com.vladdjuga.blogsite.dto.user.CreateUserDto;
+import com.vladdjuga.blogsite.dto.user.ReadUserDto;
+import com.vladdjuga.blogsite.model.entity.UserEntity;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserMapper {
+    public ReadUserDto toDto(UserEntity user){
+        if(user == null) return null;
+        return new ReadUserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt()
+        );
+    }
+    public UserEntity toEntity(CreateUserDto userDto){
+        if(userDto == null) return null;
+        UserEntity user = new UserEntity();
+        user.setUsername(userDto.username());
+        user.setEmail(userDto.email());
+        user.setPassword(userDto.password());
+        return user;
+    }
+}
