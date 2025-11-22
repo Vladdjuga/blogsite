@@ -1,11 +1,11 @@
 package com.vladdjuga.blogsite.result;
 
 public class Error {
-    public final Exception error;
+    public final Throwable error;
     public final String message;
     public final boolean isException;
 
-    public Error(String message, Exception error) {
+    public Error(String message, Throwable error) {
         this.error = error;
         this.message = message;
         this.isException = true;

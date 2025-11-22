@@ -20,7 +20,7 @@ public class Result<T> {
         return new Result<>(null, error);
     }
 
-    public static <T> Result<T> exception(String message,Exception e) {
+    public static <T> Result<T> exception(String message, Throwable e) {
         var error = new Error(message, e);
         return new Result<>(null, error);
     }

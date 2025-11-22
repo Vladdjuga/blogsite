@@ -4,7 +4,6 @@ import com.vladdjuga.blogsite.annotation.WrapResult;
 import com.vladdjuga.blogsite.dto.user.CreateUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.mapper.user.UserMapper;
-import com.vladdjuga.blogsite.model.entity.UserEntity;
 import com.vladdjuga.blogsite.repository.UserRepository;
 import com.vladdjuga.blogsite.result.Result;
 import jakarta.transaction.Transactional;
@@ -35,7 +34,7 @@ public class UserService {
         log.info("Saving user");
         log.info("User: {}", user);
         var userEntity = userMapper.toEntity(user);
-        var savedEntity = userRepository.save(userEntity);
+        var savedEntity = userRepository.saveAndFlush(userEntity);
         var resDto = userMapper.toDto(savedEntity);
         return Result.ok(resDto);
     }

@@ -1,0 +1,73 @@
+### Get all blog posts
+GET http://localhost:8080/api/posts
+Accept: application/json
+
+###
+
+### Create new blog post - Success (make sure user with ID 1 exists first)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "My First Blog Post",
+  "content": "This is the content of my first blog post. It talks about Spring Boot and AOP.",
+  "authorId": 1
+}
+
+###
+
+### Create new blog post - Another post
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Introduction to Java Records",
+  "content": "Java records are a special kind of class that act as transparent carriers for immutable data.",
+  "authorId": 1
+}
+
+###
+
+### Create new blog post - With different author
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Understanding REST APIs",
+  "content": "REST APIs are a way to communicate between client and server using HTTP methods.",
+  "authorId": 2
+}
+
+###
+
+### Create new blog post - Validation fail (null post)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+null
+
+###
+
+### Create new blog post - Validation fail (author not found)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Post with invalid author",
+  "content": "This post references a non-existent author.",
+  "authorId": 99999
+}
+
+###
+
+### Create new blog post - Missing title
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "content": "Content without title",
+  "authorId": 1
+}
+
+###
+

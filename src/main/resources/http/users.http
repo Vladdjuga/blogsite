@@ -1,0 +1,52 @@
+### Get all users
+GET http://localhost:8080/api/users
+Accept: application/json
+
+###
+
+### Create new user - Success
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "securePassword123"
+}
+
+###
+
+### Create new user - Another user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "jane_smith",
+  "email": "jane@example.com",
+  "password": "anotherPassword456"
+}
+
+###
+
+### Create new user - Validation fail (duplicate username)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john2@example.com",
+  "password": "password"
+}
+
+###
+
+### Create new user - Missing fields
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "incomplete_user"
+}
+
+###
+

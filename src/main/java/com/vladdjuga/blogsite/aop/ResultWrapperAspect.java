@@ -36,13 +36,13 @@ public class ResultWrapperAspect {
 
             if (result instanceof Result<?> resultObj && !resultObj.isSuccess) {
                 log.warn("Method {}() in {} returned failure: {}",
-                    method.getName(),
-                    signature.getDeclaringTypeName(),
-                    resultObj.error != null ? resultObj.error.message : "Unknown error");
+                        method.getName(),
+                        signature.getDeclaringTypeName(),
+                        resultObj.error != null ? resultObj.error.message : "Unknown error");
             }
 
             return result;
-        }catch(Exception e){
+        }catch(Throwable e){
             log.error("Exception in method {}() in class {}: {} - {}",
                 method.getName(),
                 signature.getDeclaringTypeName(),

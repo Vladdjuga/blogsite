@@ -4,7 +4,6 @@ import com.vladdjuga.blogsite.annotation.WrapResult;
 import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
 import com.vladdjuga.blogsite.mapper.blog_post.BlogPostMapper;
-import com.vladdjuga.blogsite.model.entity.BlogPostEntity;
 import com.vladdjuga.blogsite.repository.BlogPostRepository;
 import com.vladdjuga.blogsite.repository.UserRepository;
 import com.vladdjuga.blogsite.result.Result;
@@ -48,7 +47,7 @@ public class BlogPostService {
         }
 
         var postEntity = blogPostMapper.toEntity(post,author.get());
-        var savedEntity = postRepository.save(postEntity);
+        var savedEntity = postRepository.saveAndFlush(postEntity);
         var resDto = blogPostMapper.toDto(savedEntity);
         return Result.ok(resDto);
     }

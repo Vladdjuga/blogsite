@@ -1,0 +1,85 @@
+### Full Test Scenario - Create users and posts
+### Step 1: Create first user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "email": "alice@blog.com",
+  "password": "alice123"
+}
+
+###
+
+### Step 2: Create second user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "email": "bob@blog.com",
+  "password": "bob456"
+}
+
+###
+
+### Step 3: Get all users (should see alice and bob)
+GET http://localhost:8080/api/users
+Accept: application/json
+
+###
+
+### Step 4: Create blog post by alice (authorId: 1 or check from step 3)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Alice's Journey with Spring Boot",
+  "content": "Today I learned about AOP and how powerful it is for cross-cutting concerns like logging.",
+  "authorId": 1
+}
+
+###
+
+### Step 5: Create blog post by bob (authorId: 2 or check from step 3)
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Bob's Guide to Database Migrations",
+  "content": "Flyway makes database versioning simple and reliable. Here's what I learned...",
+  "authorId": 2
+}
+
+###
+
+### Step 6: Get all blog posts (should see posts from both alice and bob)
+GET http://localhost:8080/api/posts
+Accept: application/json
+
+###
+
+### Error Scenario 1: Try to create post with non-existent author
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "title": "Post by ghost author",
+  "content": "This should fail validation",
+  "authorId": 999
+}
+
+###
+
+### Error Scenario 2: Try to create user with duplicate username
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "email": "alice_new@blog.com",
+  "password": "differentpassword"
+}
+
+###
+
