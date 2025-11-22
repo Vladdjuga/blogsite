@@ -1,5 +1,6 @@
 package com.vladdjuga.blogsite.service;
 
+import com.vladdjuga.blogsite.annotation.WrapResult;
 import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
 import com.vladdjuga.blogsite.mapper.blog_post.BlogPostMapper;
@@ -22,6 +23,7 @@ public class BlogPostService {
     private final UserRepository userRepository;
     private final BlogPostMapper blogPostMapper;
 
+    @WrapResult
     public Result<List<ReadBlogPostDto>> getAll(){
         log.info("Getting all blog posts");
         var posts = postRepository.findAll();
@@ -29,6 +31,7 @@ public class BlogPostService {
         return Result.ok(res);
     }
 
+    @WrapResult
     @Transactional
     public Result<ReadBlogPostDto> savePost(CreateBlogPostDto post){
         if(post == null){

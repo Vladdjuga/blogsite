@@ -1,5 +1,6 @@
 package com.vladdjuga.blogsite.service;
 
+import com.vladdjuga.blogsite.annotation.WrapResult;
 import com.vladdjuga.blogsite.dto.user.CreateUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.mapper.user.UserMapper;
@@ -20,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @WrapResult
     public Result<List<ReadUserDto>> getAll(){
         log.info("Getting all users");
         var users = userRepository.findAll();
@@ -27,6 +29,7 @@ public class UserService {
         return Result.ok(res);
     }
 
+    @WrapResult
     @Transactional
     public Result<ReadUserDto> saveUser(CreateUserDto user){
         log.info("Saving user");
