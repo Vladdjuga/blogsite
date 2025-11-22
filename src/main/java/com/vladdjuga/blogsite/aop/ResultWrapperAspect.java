@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -13,6 +14,7 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 @Component
+@Order(1) // Ensure this aspect has high precedence
 public class ResultWrapperAspect {
 
     @Around("@annotation(com.vladdjuga.blogsite.annotation.WrapResult)")

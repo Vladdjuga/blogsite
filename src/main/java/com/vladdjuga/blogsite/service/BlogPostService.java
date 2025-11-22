@@ -47,7 +47,7 @@ public class BlogPostService {
         }
 
         var postEntity = blogPostMapper.toEntity(post,author.get());
-        var savedEntity = postRepository.saveAndFlush(postEntity);
+        var savedEntity = postRepository.save(postEntity);
         var resDto = blogPostMapper.toDto(savedEntity);
         return Result.ok(resDto);
     }

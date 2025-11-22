@@ -34,7 +34,7 @@ public class UserService {
         log.info("Saving user");
         log.info("User: {}", user);
         var userEntity = userMapper.toEntity(user);
-        var savedEntity = userRepository.saveAndFlush(userEntity);
+        var savedEntity = userRepository.save(userEntity);
         var resDto = userMapper.toDto(savedEntity);
         return Result.ok(resDto);
     }
