@@ -1,6 +1,6 @@
 package com.vladdjuga.blogsite.mapper.user;
 
-import com.vladdjuga.blogsite.dto.user.CreateUserDto;
+import com.vladdjuga.blogsite.dto.user.RegisterUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.model.entity.UserEntity;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class UserMapper {
                 user.getCreatedAt()
         );
     }
-    public UserEntity toEntity(CreateUserDto userDto){
+    public UserEntity toEntity(RegisterUserDto userDto){
         if(userDto == null) return null;
         UserEntity user = new UserEntity();
         user.setUsername(userDto.username());

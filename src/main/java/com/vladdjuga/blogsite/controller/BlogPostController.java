@@ -2,7 +2,6 @@ package com.vladdjuga.blogsite.controller;
 
 import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
-import com.vladdjuga.blogsite.model.entity.BlogPostEntity;
 import com.vladdjuga.blogsite.service.BlogPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
