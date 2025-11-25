@@ -6,7 +6,7 @@ A minimal Spring Boot 3 (Java 21) blogging backend. Focused on clean architectur
 - Spring Boot 3.5 (Web, Data JPA, Security, AOP, Actuator)
 - PostgreSQL + Flyway for versioned DB migrations
 - JWT authentication (token stored in HttpOnly cookie `accessToken`)
-- Lombok (will be progressively replaced by Java records for DTOs)
+- Lombok is used for boilerplate reduction where appropriate
 - Aspect for wrapping service/controller results in a unified `Result` envelope
 - Docker & Docker Compose (multi-stage build for the app + Postgres service)
 
@@ -33,7 +33,7 @@ src/main/java/com/vladdjuga/blogsite/
   security/          # JWT util & filter, security config
   aop/               # Result wrapper aspect
   result/            # Result & Error abstractions
-  dto/               # DTOs (to be migrated to records)
+  dto/               # DTOs
   repository/        # JPA repositories
   model/entity/      # JPA entities
 resources/
@@ -74,12 +74,14 @@ docker compose down -v
 5. Spring Security context is populated -> protected endpoints accessible.
 
 ## Result Wrapping Aspect
-- Methods return raw domain objects or lists.
-- Aspect intercepts and wraps them into `Result<T>` for consistent API envelope.
-- Future improvement: evaluate explicit vs implicit wrapping for clarity.
+- Applies only to methods annotated with `@WrapResult`.
+- Annotated methods MUST return `Result<T>`; otherwise an `IllegalStateException` is thrown (by the aspect).
+- If the method returns `null`, the aspect logs a warning and returns `Result.fail(...)`.
+- If the method returns a `Result` in failure state, the aspect logs the failure (but does not alter the returned value).
+- If the method throws, the aspect logs the error and returns `Result.exception(...)` so callers receive a consistent envelope.
 
 ## Flyway Migrations
-- Versioned scripts in `resources/db/migration` (V1, V2, V3, V4...)
+- Versioned scripts in `resources/db/migration`.
 - If a migration file changes after being applied, Flyway fails validation (checksum mismatch). Use `flyway:repair` only when intentional.
 - Baseline enabled for clean onboarding.
 
@@ -90,24 +92,30 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 3. Run `get_users_authorized`.
 4. Test failure cases (`login_fail_bad_password`, duplicate registration, etc.).
 
+## Unit & Integration Tests (Planned)
+- Add unit tests for services (AuthService, UserService) with mocks for repositories and password encoder.
+- Add unit tests for `JwtUtil` and token validation/claims.
+- Add web layer tests for controllers using `@WebMvcTest`.
+- Add integration tests with Testcontainers for PostgreSQL (Flyway migrations applied automatically).
+- Ensure tests reside under `src/test/java` (folder already present).
+
 ## Environment Variables (Docker)
 - `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
 - `JWT_SECRET` (override default in production)
 - `JWT_EXPIRATIONMS` (token lifetime in ms)
 
 ## Planned / Future Enhancements
-- Convert all DTOs to Java records (immutability + conciseness)
-- Add role-based authorization (e.g., ADMIN vs USER)
+- Role-based authorization (e.g., ADMIN vs USER)
 - Refresh token & logout endpoint (rotate tokens)
-- Replace cookie Strict policy with configurable SameSite Lax for cross-site needs
-- Add integration tests (Testcontainers for PostgreSQL)
+- Configurable cookie attributes (SameSite/secure) per environment
+- Integration tests (Testcontainers for PostgreSQL)
 - CI/CD pipeline (GitHub Actions: build, test, security scan)
 - Pagination & filtering for blog posts and users
 - Swagger/OpenAPI documentation
 - Caching layer (e.g., Redis) for frequently accessed content
-- Better error model with standardized codes
-- Convert `Result` wrapping to either explicit responses or use ControllerAdvice for consistency
-- Central audit logging & structured logs (JSON) for production
+- Improved error model with standardized codes
+- Review AOP result wrapping vs ControllerAdvice for consistency
+- Structured JSON logs and audit logging for production
 
 ## Development Guidelines
 - Avoid editing applied Flyway migration files; create new versions instead.
@@ -125,8 +133,7 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 | ClassNotFound on run | Incomplete build / IDE out-of-sync | `mvn clean package` then rerun |
 
 ## License
-Currently private/internal. Consider adding a LICENSE file when open-sourcing.
+This project is licensed. See the `LICENSE` file in the repository root for full terms.
 
 ---
-Feel free to extend this README as features evolve.
-
+Keep this README up to date as the project evolves.
