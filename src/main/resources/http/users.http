@@ -1,52 +1,105 @@
-### Get all users
-GET http://localhost:8080/api/users
+### Base URL variable
+@baseUrl = http://localhost:8080
+
+### ================= AUTH & USER SCENARIOS =================
+
+### Register new user (success)
+# @name register_success
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "auth_user_1",
+  "email": "auth_user_1@example.com",
+  "password": "StrongPass123!"
+}
+
+### Register same username again (should fail)
+# @name register_duplicate
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "auth_user_1",
+  "email": "auth_user_1_dup@example.com",
+  "password": "StrongPass123!"
+}
+
+### Login with valid credentials (capture accessToken cookie)
+# @name login_success
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "auth_user_1",
+  "password": "StrongPass123!"
+}
+> {%
+  // Capture JWT cookie for further requests
+  const tokenCookie = response.cookies['accessToken'];
+  if(tokenCookie){
+    client.global.set("accessToken", tokenCookie);
+  }
+%}
+
+### Login with invalid password (should 400)
+# @name login_fail_bad_password
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "auth_user_1",
+  "password": "WrongPass999"
+}
+
+### Login with non-existing user (should 400)
+# @name login_fail_no_user
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "ghost_user_x",
+  "password": "Whatever123"
+}
+
+### Get all users (authorized using captured cookie)
+# @name get_users_authorized
+GET {{baseUrl}}/api/users
+Accept: application/json
+Cookie: accessToken={{accessToken}}
+
+### Get all users WITHOUT cookie (should 401)
+# @name get_users_unauthorized
+GET {{baseUrl}}/api/users
 Accept: application/json
 
-###
+### ================= LEGACY USER CREATION (direct) =================
+# Still keep original direct user creation endpoints if needed.
 
-### Create new user - Success
-POST http://localhost:8080/api/users
+### Create new user directly - Success
+# @name direct_create_user_success
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "securePassword123"
+  "username": "legacy_user_1",
+  "email": "legacy1@example.com",
+  "password": "LegacyPass123"
 }
 
-###
-
-### Create new user - Another user
-POST http://localhost:8080/api/users
+### Create new user directly - Duplicate username
+# @name direct_create_user_duplicate
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "username": "jane_smith",
-  "email": "jane@example.com",
-  "password": "anotherPassword456"
+  "username": "legacy_user_1",
+  "email": "legacy_dup@example.com",
+  "password": "LegacyPass123"
 }
 
-###
-
-### Create new user - Validation fail (duplicate username)
-POST http://localhost:8080/api/users
-Content-Type: application/json
-
-{
-  "username": "john_doe",
-  "email": "john2@example.com",
-  "password": "password"
-}
-
-###
-
-### Create new user - Missing fields
-POST http://localhost:8080/api/users
-Content-Type: application/json
-
-{
-  "username": "incomplete_user"
-}
-
-###
-
+### Get all users (authorized cookie optional if filter applies to this endpoint)
+# @name get_all_users_direct
+GET {{baseUrl}}/api/users
+Accept: application/json
+Cookie: accessToken={{accessToken}}

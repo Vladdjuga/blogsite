@@ -1,0 +1,17 @@
+# Ignore build output and VCS metadata
+.target/
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+
+# Maven local cache should not be sent (keeps image smaller)
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# Node / frontend stuff if added later
+node_modules/
+

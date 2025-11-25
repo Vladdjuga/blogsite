@@ -1,0 +1,34 @@
+services:
+  postgres:
+    # Pin a stable major version to avoid unexpected breaking changes in directory layout
+    image: postgres:16-alpine
+    container_name: blogsite-postgres
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: blogdb
+    ports:
+      - "5433:5432"
+    volumes:
+      # Legacy mount point works for <=17. For 18+ you'd mount /var/lib/postgresql instead.
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blogsite-app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/blogdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_FLYWAY_ENABLED: "true"
+      JWT_SECRET: supermegaultrasecretkey_changeitinproduction123
+      JWT_EXPIRATIONMS: "3600000"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
