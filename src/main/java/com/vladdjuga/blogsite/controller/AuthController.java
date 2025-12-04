@@ -1,6 +1,7 @@
 package com.vladdjuga.blogsite.controller;
 
 
+import com.vladdjuga.blogsite.dto.auth.TokenDto;
 import com.vladdjuga.blogsite.dto.user.LoginUserDto;
 import com.vladdjuga.blogsite.dto.user.RegisterUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
@@ -44,6 +45,15 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("Logged in successfully");
+    }
+
+    @PostMapping("/token")
+    public ResponseEntity<TokenDto> getToken(@Valid @RequestBody LoginUserDto req) {
+        var res = authService.authenticate(req.username(), req.password());
+        if (!res.isSuccess) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new TokenDto(res.value, jwtExpirationMs / 1000));
     }
 
     @PostMapping("/register")

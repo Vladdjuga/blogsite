@@ -17,18 +17,17 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Blogsite API")
-                        .description("REST API for Blogsite application")
+                        .description("REST API for Blogsite application. Authentication via HttpOnly cookie 'accessToken'. Use /api/auth/login to get the cookie. Or use /api/auth/token to get the token directly.")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Vlad Djuga")))
-                .addSecurityItem(new SecurityRequirement().addList("JWT"))
+                                .name("Vladyslav Dzhuha")))
+                .addSecurityItem(new SecurityRequirement().addList("cookieAuth"))
                 .components(new Components()
-                        .addSecuritySchemes("JWT", new SecurityScheme()
-                                .name("JWT")
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .description("Enter JWT token")));
+                        .addSecuritySchemes("cookieAuth", new SecurityScheme()
+                                .name("accessToken")
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.COOKIE)
+                                .description("JWT token in HttpOnly cookie. Login via /api/auth/login to set the cookie.")));
     }
 }
 
