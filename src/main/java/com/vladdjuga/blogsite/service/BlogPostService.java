@@ -3,6 +3,7 @@ package com.vladdjuga.blogsite.service;
 import com.vladdjuga.blogsite.annotation.WrapResult;
 import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
+import com.vladdjuga.blogsite.dto.blog_post.UpdateBlogPostDto;
 import com.vladdjuga.blogsite.mapper.blog_post.BlogPostMapper;
 import com.vladdjuga.blogsite.repository.BlogPostRepository;
 import com.vladdjuga.blogsite.repository.UserRepository;
@@ -31,6 +32,17 @@ public class BlogPostService {
     }
 
     @WrapResult
+    public Result<ReadBlogPostDto> getById(Long id){
+        log.info("Getting blog post by id: {}", id);
+        var post = postRepository.findById(id);
+        if(post.isEmpty()){
+            log.warn("Blog post with id {} not found", id);
+            return Result.fail("Blog post not found");
+        }
+        return Result.ok(blogPostMapper.toDto(post.get()));
+    }
+
+    @WrapResult
     @Transactional
     public Result<ReadBlogPostDto> savePost(CreateBlogPostDto post){
         if(post == null){
@@ -50,5 +62,37 @@ public class BlogPostService {
         var savedEntity = postRepository.save(postEntity);
         var resDto = blogPostMapper.toDto(savedEntity);
         return Result.ok(resDto);
+    }
+
+    @WrapResult
+    @Transactional
+    public Result<ReadBlogPostDto> updatePost(Long id, UpdateBlogPostDto dto){
+        log.info("Updating blog post with id: {}", id);
+        var post = postRepository.findById(id);
+        if(post.isEmpty()){
+            log.warn("Blog post with id {} not found", id);
+            return Result.fail("Blog post not found");
+        }
+
+        var postEntity = post.get();
+        blogPostMapper.updateEntity(postEntity, dto);
+        var savedEntity = postRepository.save(postEntity);
+        var resDto = blogPostMapper.toDto(savedEntity);
+        return Result.ok(resDto);
+    }
+
+    @WrapResult
+    @Transactional
+    public Result<Void> deletePost(Long id){
+        log.info("Deleting blog post with id: {}", id);
+        var post = postRepository.findById(id);
+        if(post.isEmpty()){
+            log.warn("Blog post with id {} not found", id);
+            return Result.fail("Blog post not found");
+        }
+
+        postRepository.delete(post.get());
+        log.info("Blog post with id {} deleted", id);
+        return Result.ok(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.vladdjuga.blogsite.model.entity;
 
+import com.vladdjuga.blogsite.model.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,6 +27,10 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogPostEntity> posts = new ArrayList<>();

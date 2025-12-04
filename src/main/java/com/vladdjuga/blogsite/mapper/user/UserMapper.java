@@ -2,6 +2,7 @@ package com.vladdjuga.blogsite.mapper.user;
 
 import com.vladdjuga.blogsite.dto.user.RegisterUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
+import com.vladdjuga.blogsite.dto.user.UpdateUserDto;
 import com.vladdjuga.blogsite.model.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class UserMapper {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getRole(),
                 user.getCreatedAt()
         );
     }
@@ -23,5 +25,14 @@ public class UserMapper {
         user.setEmail(userDto.email());
         user.setPassword(userDto.password());
         return user;
+    }
+
+    public void updateEntity(UserEntity entity, UpdateUserDto dto){
+        if(dto.username() != null){
+            entity.setUsername(dto.username());
+        }
+        if(dto.email() != null){
+            entity.setEmail(dto.email());
+        }
     }
 }
