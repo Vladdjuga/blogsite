@@ -105,14 +105,14 @@ class BlogPostServiceTest {
 
     @Test
     void savePost_shouldSaveAndReturnPost() {
-        CreateBlogPostDto createDto = new CreateBlogPostDto("New Post", "New Content", 1L);
+        CreateBlogPostDto createDto = new CreateBlogPostDto("New Post", "New Content");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(author));
         when(blogPostMapper.toEntity(createDto, author)).thenReturn(postEntity);
         when(postRepository.save(postEntity)).thenReturn(postEntity);
         when(blogPostMapper.toDto(postEntity)).thenReturn(readPostDto);
 
-        var result = blogPostService.savePost(createDto);
+        var result = blogPostService.savePost(createDto, 1L);
 
         assertTrue(result.isSuccess);
         assertNotNull(result.value);
@@ -121,7 +121,7 @@ class BlogPostServiceTest {
 
     @Test
     void savePost_shouldFailWhenPostIsNull() {
-        var result = blogPostService.savePost(null);
+        var result = blogPostService.savePost(null, 1L);
 
         assertFalse(result.isSuccess);
         assertEquals("Post cannot be null", result.error.message);
@@ -130,11 +130,11 @@ class BlogPostServiceTest {
 
     @Test
     void savePost_shouldFailWhenAuthorNotFound() {
-        CreateBlogPostDto createDto = new CreateBlogPostDto("New Post", "New Content", 99L);
+        CreateBlogPostDto createDto = new CreateBlogPostDto("New Post", "New Content");
 
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        var result = blogPostService.savePost(createDto);
+        var result = blogPostService.savePost(createDto, 99L);
 
         assertFalse(result.isSuccess);
         assertEquals("Author not found", result.error.message);

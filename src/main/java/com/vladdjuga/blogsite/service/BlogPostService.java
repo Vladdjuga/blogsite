@@ -44,7 +44,7 @@ public class BlogPostService {
 
     @WrapResult
     @Transactional
-    public Result<ReadBlogPostDto> savePost(CreateBlogPostDto post){
+    public Result<ReadBlogPostDto> savePost(CreateBlogPostDto post,Long authorId){
         if(post == null){
             log.warn("Attempted to save null post");
             return Result.fail("Post cannot be null");
@@ -52,9 +52,9 @@ public class BlogPostService {
         log.info("Saving post");
         log.info("Post: {}", post);
 
-        var author = userRepository.findById(post.authorId());
+        var author = userRepository.findById(authorId);
         if(author.isEmpty()){
-            log.warn("Author with id {} not found", post.authorId());
+            log.warn("Author with id {} not found", authorId);
             return Result.fail("Author not found");
         }
 

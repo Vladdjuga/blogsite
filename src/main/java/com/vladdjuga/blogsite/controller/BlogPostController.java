@@ -3,11 +3,13 @@ package com.vladdjuga.blogsite.controller;
 import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.UpdateBlogPostDto;
+import com.vladdjuga.blogsite.security.CustomUserDetails;
 import com.vladdjuga.blogsite.service.BlogPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +39,9 @@ public class BlogPostController {
     }
 
     @PostMapping({"", "/"})
-    public ResponseEntity<ReadBlogPostDto> createNewPost(@Valid @RequestBody CreateBlogPostDto post) {
-        var res = postService.savePost(post);
+    public ResponseEntity<ReadBlogPostDto> createNewPost(@Valid @RequestBody CreateBlogPostDto post,
+                                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
+        var res = postService.savePost(post,userDetails.getId());
         if(!res.isSuccess){
             return ResponseEntity.badRequest().build();
         }

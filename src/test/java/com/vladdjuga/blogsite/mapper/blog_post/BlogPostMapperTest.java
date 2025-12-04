@@ -56,7 +56,7 @@ class BlogPostMapperTest {
         author.setId(1L);
         author.setUsername("testuser");
 
-        CreateBlogPostDto dto = new CreateBlogPostDto("Test Title", "Test Content", 1L);
+        CreateBlogPostDto dto = new CreateBlogPostDto("Test Title", "Test Content");
 
         BlogPostEntity entity = blogPostMapper.toEntity(dto, author);
 
@@ -77,7 +77,7 @@ class BlogPostMapperTest {
 
     @Test
     void toEntity_shouldReturnNullWhenAuthorIsNull() {
-        CreateBlogPostDto dto = new CreateBlogPostDto("Title", "Content", 1L);
+        CreateBlogPostDto dto = new CreateBlogPostDto("Title", "Content");
 
         BlogPostEntity entity = blogPostMapper.toEntity(dto, null);
 

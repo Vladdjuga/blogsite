@@ -10,8 +10,5 @@ public record CreateBlogPostDto(
         String title,
 
         @NotBlank(message = "Content is required")
-        String content,
-
-        @NotNull(message = "Author ID is required")
-        Long authorId
+        String content
 ) {}
