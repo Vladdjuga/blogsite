@@ -41,6 +41,7 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll() // only for development!
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
