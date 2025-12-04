@@ -4,6 +4,7 @@ import com.vladdjuga.blogsite.dto.blog_post.CreateBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.ReadBlogPostDto;
 import com.vladdjuga.blogsite.dto.blog_post.UpdateBlogPostDto;
 import com.vladdjuga.blogsite.service.BlogPostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +37,7 @@ public class BlogPostController {
     }
 
     @PostMapping({"", "/"})
-    public ResponseEntity<ReadBlogPostDto> createNewPost(@RequestBody CreateBlogPostDto post) {
+    public ResponseEntity<ReadBlogPostDto> createNewPost(@Valid @RequestBody CreateBlogPostDto post) {
         var res = postService.savePost(post);
         if(!res.isSuccess){
             return ResponseEntity.badRequest().build();
@@ -46,7 +47,7 @@ public class BlogPostController {
 
     @PreAuthorize("@securityService.isPostOwner(#id) or hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ReadBlogPostDto> updatePost(@PathVariable Long id, @RequestBody UpdateBlogPostDto post) {
+    public ResponseEntity<ReadBlogPostDto> updatePost(@PathVariable Long id, @Valid @RequestBody UpdateBlogPostDto post) {
         var res = postService.updatePost(id, post);
         if(!res.isSuccess){
             return ResponseEntity.notFound().build();

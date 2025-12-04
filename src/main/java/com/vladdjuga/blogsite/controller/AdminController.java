@@ -3,6 +3,7 @@ package com.vladdjuga.blogsite.controller;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.dto.user.UpdateUserDto;
 import com.vladdjuga.blogsite.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<ReadUserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
+    public ResponseEntity<ReadUserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDto user) {
         var res = userService.updateUser(id, user);
         if (!res.isSuccess) {
             return ResponseEntity.notFound().build();

@@ -6,6 +6,7 @@ import com.vladdjuga.blogsite.dto.user.RegisterUserDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.service.AuthService;
 import com.vladdjuga.blogsite.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +28,7 @@ public class AuthController {
     @Value("${jwt.expirationMs}")
     private long jwtExpirationMs;
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginUserDto req) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginUserDto req) {
         var res = authService.authenticate(req.username(), req.password());
         if(!res.isSuccess){
             return ResponseEntity.badRequest().build();
@@ -46,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ReadUserDto> register(@RequestBody RegisterUserDto user) {
+    public ResponseEntity<ReadUserDto> register(@Valid @RequestBody RegisterUserDto user) {
         var res = userService.saveUser(user);
         if(!res.isSuccess){
             return ResponseEntity.badRequest().build();
