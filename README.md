@@ -1,54 +1,121 @@
 # Blogsite
 
-A minimal Spring Boot 3 (Java 21) blogging backend. Focused on clean architecture, explicit API responses, and evolving authentication/authorization.
+[![CI](https://github.com/vladdjuga/blogsite/actions/workflows/ci.yml/badge.svg)](https://github.com/vladdjuga/blogsite/actions/workflows/ci.yml)
 
-## Current Stack
-- Spring Boot 3.5 (Web, Data JPA, Security, AOP, Actuator)
-- PostgreSQL + Flyway for versioned DB migrations
-- JWT authentication (token stored in HttpOnly cookie `accessToken`)
-- Lombok is used for boilerplate reduction where appropriate
-- Aspect for wrapping service/controller results in a unified `Result` envelope
-- Docker & Docker Compose (multi-stage build for the app + Postgres service)
+A Spring Boot 3 (Java 21) blogging backend with clean architecture, JWT authentication, role-based authorization, and OpenAPI documentation.
 
-## Main Features (Implemented)
-- User registration and login (issue JWT, set cookie, max-age from `jwt.expirationMs`)
-- Basic user listing (protected endpoint)
-- Centralized error handling (global exception handler + SQL constraint logging)
-- Flyway migrations with baseline + checksum validation
-- JWT Filter that authenticates requests based on the cookie
-- HTTP test scripts (`src/main/resources/http/*.http`) for quick manual testing (IntelliJ HTTP Client)
+## Tech Stack
 
-## Endpoints (Current)
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| POST | `/api/auth/register` | Register new user | Public |
-| POST | `/api/auth/login` | Authenticate & set JWT cookie | Public |
-| GET  | `/api/users` | List all users | Requires JWT |
+- **Spring Boot 3.5** (Web, Data JPA, Security, AOP, Validation, Actuator)
+- **PostgreSQL** + Flyway migrations
+- **JWT** authentication (HttpOnly cookie)
+- **OpenAPI/Swagger** documentation
+- **Docker** & Docker Compose
+- **GitHub Actions** CI
 
-## Project Structure (Highlights)
+## Features
+
+- ✅ User registration & login (JWT in HttpOnly cookie)
+- ✅ Role-based authorization (USER, ADMIN)
+- ✅ Full CRUD for Blog Posts
+- ✅ Full CRUD for Users
+- ✅ Owner-based access control (users can only edit/delete their own posts)
+- ✅ Request validation with detailed error messages
+- ✅ Centralized exception handling
+- ✅ AOP-based Result wrapper pattern
+- ✅ OpenAPI/Swagger UI
+
+## API Endpoints
+
+### Auth (Public)
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login & get JWT cookie |
+| POST | `/api/auth/logout` | Logout & clear JWT cookie |
+
+### Users
+| Method | Path | Description | Access |
+|--------|------|-------------|--------|
+| GET | `/api/users/me` | Get current user | Authenticated |
+| PUT | `/api/users/me` | Update current user | Authenticated |
+| DELETE | `/api/users/me` | Delete current user | Authenticated |
+
+### Blog Posts
+| Method | Path | Description | Access |
+|--------|------|-------------|--------|
+| GET | `/api/posts` | Get all posts | Public |
+| GET | `/api/posts/{id}` | Get post by ID | Public |
+| POST | `/api/posts` | Create new post | Authenticated |
+| PUT | `/api/posts/{id}` | Update post | Owner or Admin |
+| DELETE | `/api/posts/{id}` | Delete post | Owner or Admin |
+
+### Admin
+| Method | Path | Description | Access |
+|--------|------|-------------|--------|
+| GET | `/api/admin/users` | Get all users | Admin only |
+| GET | `/api/admin/users/{id}` | Get user by ID | Admin only |
+| PUT | `/api/admin/users/{id}` | Update any user | Admin only |
+| DELETE | `/api/admin/users/{id}` | Delete any user | Admin only |
+
+## Project Structure
+
 ```
 src/main/java/com/vladdjuga/blogsite/
-  controller/        # REST controllers (AuthController, UserController, ...)
-  service/           # Business logic (AuthService, UserService, ...)
-  security/          # JWT util & filter, security config
-  aop/               # Result wrapper aspect
-  result/            # Result & Error abstractions
-  dto/               # DTOs
-  repository/        # JPA repositories
-  model/entity/      # JPA entities
-resources/
-  db/migration/      # Flyway migration scripts
-  http/              # Manual test requests
-Dockerfile           # Multi-stage build
-compose.yml          # App + PostgreSQL services
+├── controller/      # REST controllers
+├── service/         # Business logic
+├── repository/      # JPA repositories
+├── model/           # Entities & enums
+├── dto/             # Request/Response DTOs
+├── mapper/          # Entity <-> DTO mappers
+├── security/        # JWT, filters, security service
+├── config/          # Security, AOP, OpenAPI configs
+├── aop/             # Result wrapper aspect
+├── result/          # Result & Error types
+└── exception/       # Global exception handler
+
+src/main/resources/
+├── db/migration/    # Flyway SQL migrations
+└── http/            # HTTP test files (IntelliJ)
 ```
 
-## Running Locally (Non-Docker)
-Prerequisites: Java 21, Maven, PostgreSQL running on `localhost:5433` with DB `blogdb` and user `postgres/pass`.
+## Running Locally
+
+### With Docker Compose
 ```bash
-mvn spring-boot:run
+docker-compose up
 ```
-Visit: `http://localhost:8080`
+
+### Without Docker
+Prerequisites: Java 21, Maven, PostgreSQL
+
+```bash
+# Set environment variables
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/blogdb
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=pass
+export JWT_SECRET=your-secret-key-min-32-characters
+export JWT_EXPIRATION_MS=86400000
+
+# Run
+./mvnw spring-boot:run
+```
+
+## API Documentation
+
+After starting the application:
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+
+## Running Tests
+
+```bash
+./mvnw test
+```
+
+## License
+
+MIT
 
 ## Running with Docker Compose
 ```bash
@@ -105,16 +172,12 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 - `JWT_EXPIRATIONMS` (token lifetime in ms)
 
 ## Planned / Future Enhancements
-- Role-based authorization (e.g., ADMIN vs USER)
 - Refresh token & logout endpoint (rotate tokens)
 - Configurable cookie attributes (SameSite/secure) per environment
 - Integration tests (Testcontainers for PostgreSQL)
-- CI/CD pipeline (GitHub Actions: build, test, security scan)
 - Pagination & filtering for blog posts and users
-- Swagger/OpenAPI documentation
 - Caching layer (e.g., Redis) for frequently accessed content
 - Improved error model with standardized codes
-- Review AOP result wrapping vs ControllerAdvice for consistency
 - Structured JSON logs and audit logging for production
 
 ## Development Guidelines
