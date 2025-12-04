@@ -88,4 +88,47 @@ public class UserService {
         log.info("User with id {} deleted", id);
         return Result.ok(null);
     }
+
+    @WrapResult
+    public Result<ReadUserDto> getByUsername(String username){
+        log.info("Getting user by username: {}", username);
+        var user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            log.warn("User with username {} not found", username);
+            return Result.fail("User not found");
+        }
+        return Result.ok(userMapper.toDto(user.get()));
+    }
+
+    @WrapResult
+    @Transactional
+    public Result<ReadUserDto> updateByUsername(String username, UpdateUserDto dto){
+        log.info("Updating user with username: {}", username);
+        var user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            log.warn("User with username {} not found", username);
+            return Result.fail("User not found");
+        }
+
+        var userEntity = user.get();
+        userMapper.updateEntity(userEntity, dto);
+        var savedEntity = userRepository.save(userEntity);
+        var resDto = userMapper.toDto(savedEntity);
+        return Result.ok(resDto);
+    }
+
+    @WrapResult
+    @Transactional
+    public Result<Void> deleteByUsername(String username){
+        log.info("Deleting user with username: {}", username);
+        var user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            log.warn("User with username {} not found", username);
+            return Result.fail("User not found");
+        }
+
+        userRepository.delete(user.get());
+        log.info("User with username {} deleted", username);
+        return Result.ok(null);
+    }
 }

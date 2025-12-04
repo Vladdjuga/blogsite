@@ -6,6 +6,7 @@ import com.vladdjuga.blogsite.dto.blog_post.UpdateBlogPostDto;
 import com.vladdjuga.blogsite.service.BlogPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class BlogPostController {
         return ResponseEntity.ok(res.value);
     }
 
+    @PreAuthorize("@securityService.isPostOwner(#id) or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ReadBlogPostDto> updatePost(@PathVariable Long id, @RequestBody UpdateBlogPostDto post) {
         var res = postService.updatePost(id, post);
@@ -52,6 +54,7 @@ public class BlogPostController {
         return ResponseEntity.ok(res.value);
     }
 
+    @PreAuthorize("@securityService.isPostOwner(#id) or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         var res = postService.deletePost(id);

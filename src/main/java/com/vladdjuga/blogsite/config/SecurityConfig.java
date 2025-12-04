@@ -42,8 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll() // only for development!
                                 .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -63,7 +63,7 @@ class UserServiceTest {
 
         assertTrue(result.isSuccess);
         assertEquals(1, result.value.size());
-        assertEquals(readUserDto, result.value.get(0));
+        assertEquals(readUserDto, result.value.getFirst());
         verify(userRepository).findAll();
     }
 

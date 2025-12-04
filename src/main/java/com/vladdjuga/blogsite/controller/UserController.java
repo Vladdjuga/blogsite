@@ -5,9 +5,9 @@ import com.vladdjuga.blogsite.dto.user.UpdateUserDto;
 import com.vladdjuga.blogsite.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -16,37 +16,30 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping({"", "/"})
-    public ResponseEntity<List<ReadUserDto>> getAll() {
-        var users = userService.getAll();
-        if(!users.isSuccess){
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(users.value);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ReadUserDto> getById(@PathVariable Long id) {
-        var res = userService.getById(id);
-        if(!res.isSuccess){
+    @GetMapping("/me")
+    public ResponseEntity<ReadUserDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        var res = userService.getByUsername(userDetails.getUsername());
+        if (!res.isSuccess) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(res.value);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ReadUserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
-        var res = userService.updateUser(id, user);
-        if(!res.isSuccess){
+    @PutMapping("/me")
+    public ResponseEntity<ReadUserDto> updateCurrentUser(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody UpdateUserDto user) {
+        var res = userService.updateByUsername(userDetails.getUsername(), user);
+        if (!res.isSuccess) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(res.value);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        var res = userService.deleteUser(id);
-        if(!res.isSuccess){
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        var res = userService.deleteByUsername(userDetails.getUsername());
+        if (!res.isSuccess) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
