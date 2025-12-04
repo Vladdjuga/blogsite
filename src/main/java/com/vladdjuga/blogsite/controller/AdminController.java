@@ -1,5 +1,6 @@
 package com.vladdjuga.blogsite.controller;
 
+import com.vladdjuga.blogsite.dto.user.ChangeRoleDto;
 import com.vladdjuga.blogsite.dto.user.ReadUserDto;
 import com.vladdjuga.blogsite.dto.user.UpdateUserDto;
 import com.vladdjuga.blogsite.service.UserService;
@@ -53,6 +54,15 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/users/{id}/role")
+    public ResponseEntity<ReadUserDto> changeRole(@PathVariable Long id, @Valid @RequestBody ChangeRoleDto dto) {
+        var res = userService.changeRole(id, dto.role());
+        if (!res.isSuccess) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(res.value);
     }
 }
 
