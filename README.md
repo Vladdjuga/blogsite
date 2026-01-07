@@ -159,8 +159,9 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 3. Run `get_users_authorized`.
 4. Test failure cases (`login_fail_bad_password`, duplicate registration, etc.).
 
-## Unit & Integration Tests (Planned)
-- Add unit tests for services (AuthService, UserService) with mocks for repositories and password encoder.
+## Unit & Integration Tests
+- Unit tests for services (AuthService, UserService) with mocks for repositories and password encoder.
+### Planned : 
 - Add unit tests for `JwtUtil` and token validation/claims.
 - Add web layer tests for controllers using `@WebMvcTest`.
 - Add integration tests with Testcontainers for PostgreSQL (Flyway migrations applied automatically).
