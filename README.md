@@ -162,10 +162,8 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 ## Unit & Integration Tests
 - Unit tests for services (AuthService, UserService) with mocks for repositories and password encoder.
 ### Planned : 
-- Add unit tests for `JwtUtil` and token validation/claims.
 - Add web layer tests for controllers using `@WebMvcTest`.
 - Add integration tests with Testcontainers for PostgreSQL (Flyway migrations applied automatically).
-- Ensure tests reside under `src/test/java` (folder already present).
 
 ## Environment Variables (Docker)
 - `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
@@ -173,7 +171,6 @@ Use IntelliJ's HTTP client file: `src/main/resources/http/users.http`.
 - `JWT_EXPIRATIONMS` (token lifetime in ms)
 
 ## Planned / Future Enhancements
-- Refresh token & logout endpoint (rotate tokens)
 - Configurable cookie attributes (SameSite/secure) per environment
 - Integration tests (Testcontainers for PostgreSQL)
 - Pagination & filtering for blog posts and users
